@@ -17,6 +17,7 @@ MyDate::MyDate()
     month = 1;
     day   = 1;
 }
+
 MyDate::MyDate(int y_, int m_, int d_)
 {
     if (is_legal(y_,m_,d_)) 
@@ -43,6 +44,7 @@ int MyDate::days() const
     }
     else return days[month];
 }
+
 int MyDate::days(int y, int m)
 {
     int days[13] ={0,31,28,31,30,31,30,31,31,30,31,30,31};
@@ -53,6 +55,7 @@ int MyDate::days(int y, int m)
     }
     else return days[m];
 }
+
 bool MyDate::is_legal(int ty, int tm, int td)
 {
     bool if_y = true, if_m = true, if_d = true;
@@ -74,6 +77,7 @@ bool MyDate::is_legal(int ty, int tm, int td)
     }
     else return true;
 }
+
 MyDate MyDate::get_suggestion(int y, int m, int d)
 {
     MyDate advice;
@@ -97,6 +101,7 @@ MyDate MyDate::get_suggestion(int y, int m, int d)
 
     return advice;
 }
+
 bool MyDate::set(int y_, int m_, int d_)
 {
     if (is_legal(y_,m_,d_) == 0) 
@@ -109,22 +114,26 @@ bool MyDate::set(int y_, int m_, int d_)
         return true;
     }
 }
+
 void MyDate::set(const MyDate& date)
 {
     year = date.year;
     month = date.month;
     day = date.day;
 }
+
 bool MyDate::is_leap() const
 { 
     if( (year % 4 ==0 && year % 100 != 0) || year % 400 == 0 ) return 1;
     else return 0;
 }
+
 int MyDate::is_leap(int year)
 { 
     if( (year % 4 ==0 && year % 100 != 0) || year % 400 == 0 ) return 1;
     else return 0;
 }
+
 void MyDate::print() const
 {
     static char months_eng[13][15] = {"0","January","February","March","April",
@@ -247,13 +256,13 @@ void MyDate::rolling(int k)
     if (k>0) forward(k); 
     else rollback(-k);
 }
+
 void MyDate::rolling_1(int dif) //not recommend
 {
     int k = dif;
     if (k<0) while(k!=0) {yesterday(); k++;}
     else while (k!=0) {tomorrow(); k--;}
 }
-
 
 int MyDate::get_gap_2(const MyDate& dst) const //not recommend
 {
@@ -272,6 +281,7 @@ int MyDate::get_gap_2(const MyDate& dst) const //not recommend
         }
     return gap;
 }
+
 int MyDate::get_gap_1(const MyDate& dst) const 
 {
     int cy = year, cm = month, cd = day;
@@ -283,15 +293,15 @@ int MyDate::get_gap_1(const MyDate& dst) const
     }
     if (ey == cy)
     {
-        if (em == cm) sum = ed - cd; //????????????????????
-        if (em > cm) //????????
+        if (em == cm) sum = ed - cd; //如果同月，则日期相减即得
+        if (em > cm) //如果不同月
         {
-            sum += (days(cy,cm) - cd); //????????????
-            sum += ed; //????????????????
+            sum += (days(cy,cm) - cd); //则该月剩余天数，
+            sum += ed; //加上目标月已过天数，
             for (int i = cm + 1; i < em; i++) sum += days(cy,i);
-            //??????��????????
+            //再加上中间的间隔，即得sum！
         }
-        //??????????????????
+        // 另外的写法
         /*int sum1=0, sum2=0;
         for (int i=1; i<cm; i++) sum1 += days(cy,i);
         sum1 += cd;
@@ -301,24 +311,25 @@ int MyDate::get_gap_1(const MyDate& dst) const
     }
     if (ey > cy)
     {
-        //????????????????
-        //1. ???????????????
+        //不同年可以分成五个阶段
+        //1. 累加当前月的剩余天数
         sum += (days(cy,cm) - cd); 
-        //2. ?????????????????????????????????????
+        //2. 累加当前年内，当前日期到年底之间所有整月的天数
         for (int i = cm + 1; i <= 12; i++) sum += days(cy,i);
-        //3. ????????????????
+        //3. 累加之间年份的整天数
         for (int i = cy + 1; i < ey; i++) 
         {
             if (is_leap(i)==1) sum += 366;
             else sum += 365;
         }
-        //4. ????????????????????????????????
+        //4. 累加目标年到目标日期之间的所有整月的天数
         for (int i = 1;i < em; i++) sum += days(ey, i);
-        //5. ?????????????
+        //5. 累加目标月的天数
         sum += ed;
     }
     return sum;
 }
+
 int MyDate::get_gap(const MyDate& date) const
 {
     int sum = 0, sum1 = 0, sum2 = 0;
