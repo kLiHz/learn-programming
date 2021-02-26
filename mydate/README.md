@@ -1,19 +1,18 @@
-# mydate-cpp
+# MyDate
 
 A C++ class that can stores and output a date with different styles, with checking and suggesting function. 
 
-# description
+## Description
 
-Use `MyDate` class to store a date, and insert it to the outstream with different styles;
+Use `MyDate` class to store a date, and obtain a `std::string` of it in various forms;
 
-And you can also calculate the days between two date; rolling forward or back is also supported;
+You can find out how many days are there between two certain dates; rolling forward or backward is also supported;
 
 Several methods are provided;
 
-`MyDate::print()`: Now support Chinese and English. Output what day it is now an optional setting, and applys to every output. A parameter to decide this when calling this function is under considering. 
+`MyDate::to_string()`: Return a string of the date. Now support Chinese and English. Whether to print what day it is today is optional, and currently such settings apply to each call. 
 
-`MyDate::set()`: Now, when `set()` function will **throw** a `MyDate` class out when it is processing illegal year-month-day combnation. 
-The class it is throwing contains a legal date suggestion that is given out by function `MyDate::get_suggestion()`;
+`MyDate::set()`: Now, when `set()` function will **throw** out a `MyDate` class when it is processing illegal "year-month-day" combination. This object representing a legal date suggestion, which is suggested by the function `MyDate::get_suggestion()`;
 
 ```cpp
 MyDate my_date;
@@ -24,10 +23,8 @@ try {
 }
 catch (MyDate advice)
 {
-    std::cout<<"Set failed! Illegal combination! ";
-    std::cout<<"Did you mean: ";
-    advice.print();
-    std::cout<<"?"<<endl;
+    std::cout << "Set failed! Illegal combination! ";
+    std::cout << "Did you mean: " << advice.to_string() << "?" << std::endl;
 }
 ```
 

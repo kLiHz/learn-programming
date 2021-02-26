@@ -3,11 +3,13 @@
 
 #include "mydate.h"
 
+int MyDate::style = MyDate::Chinese;
+bool MyDate::with_what_day = false;
+
 void MyDate::set_style(int t) 
 {
-    if(t == day_print_on) if_print_day = true;
-    else if (t == day_print_off) if_print_day = false;
-    else if (t == day_print) if_print_day = !if_print_day;
+    if (t == day_print_on) with_what_day = true;
+    else if (t == day_print_off) with_what_day = false;
     else style = t;
 }
 
@@ -26,28 +28,16 @@ MyDate::MyDate(int y_, int m_, int d_)
     }
     else
     {
-        cout<<"class: MyDate: Construction Failure: ";
-        cout<<"Initialization failed. \n Date is set to ";
+        std::cout << "class: MyDate: Construction Failure: ";
+        std::cout << "Initialization failed. \n Date is set to ";
         year = 1970; month = 1; day = 1;
-        print();
-        cout<<". "<<endl;
+        std::cout << this->to_string() << ". \n" << std::endl;
     }
-}
-
-int MyDate::days() const
-{
-    int days[13] ={0,31,28,31,30,31,30,31,31,30,31,30,31};
-    if (month==2)
-    {
-        if(is_leap()) return 29;
-        else return 28;
-    }
-    else return days[month];
 }
 
 int MyDate::days(int y, int m)
 {
-    int days[13] ={0,31,28,31,30,31,30,31,31,30,31,30,31};
+    int days[13] = {0,31,28,31,30,31,30,31,31,30,31,30,31};
     if (m==2)
     {
         if(is_leap(y)) return 29;
@@ -58,6 +48,8 @@ int MyDate::days(int y, int m)
 
 bool MyDate::is_legal(int ty, int tm, int td)
 {
+    using std::cout; 
+    using std::endl;
     bool if_y = true, if_m = true, if_d = true;
     if (ty < 1700 || ty > 2999) if_y = false;
     else if (tm < 1 || tm > 12) if_m = false;
@@ -95,7 +87,7 @@ MyDate MyDate::get_suggestion(int y, int m, int d)
 
     if (d == 0) d = 1;
     else if (d < 1) d = -d;
-    if (d > advice.days() && d < 32) d = advice.days();
+    if (d > MyDate::days(y,m) && d < 32) d = MyDate::days(y,m);
     else d = d % 10;
     advice.day = d;
 
@@ -134,24 +126,28 @@ int MyDate::is_leap(int year)
     else return 0;
 }
 
-void MyDate::print() const
+std::string MyDate::to_string() const
 {
     static char months_eng[13][15] = {"0","January","February","March","April",
         "May","June","July","August","September","October","November","December"};
+    std::string str;
+    auto year_str  = std::to_string(this->year);
+    auto month_str = std::to_string(this->month);
+    auto day_str   = std::to_string(this->day);
     if (style == Chinese) {
-        cout<<year<<"年"<<month<<"月"<<day<<"日";
-        if (if_print_day) {cout<<"  "; print_day();}
+        str = year_str + "年" + month_str + "月" + day_str + "日";
+        if (with_what_day) { str += "  "; str += this->day_string(); }
     }
     else if (style == Normal) {
-        cout<<year<<"/"<<month<<"/"<<day;
+        str = year_str + "/" + month_str + "/" + day_str;
     }
     else if (style == American) {
-        if (if_print_day) {print_day(); cout<<", ";}
-        cout<<months_eng[month]<<" "<<day<<", "<<year;
+        if (with_what_day) { str += (this->day_string() + ", "); }
+        str += (std::string(months_eng[month]) + " " + day_str + ", " + year_str);
     }
     else if (style == English) {
-        if (if_print_day) {print_day(); cout<<", ";}
-        cout<<day<<" "<<months_eng[month]<<", "<<year;
+        if (with_what_day) { str += (this->day_string() + ", "); }
+        str += (day_str + " " + months_eng[month] + ", " + year_str); 
     }
     /*else
     {
@@ -179,57 +175,67 @@ void MyDate::print() const
             cout<<year;
         }
     } */
+    return str;
 }
-bool MyDate::equals(const MyDate& date) const
+
+bool MyDate::equals_to(const MyDate& date) const
 {
     return (date.year == year && date.month == month && date.day == day);
 }
-void MyDate::tomorrow()
+
+MyDate MyDate::tomorrow()
 {
-    day++;
-    if (day > days()) 
-    {
-        day = 1;
-        month++;
-        if(month > 12) 
-        {
-            month = 1;
-            year++;
+    auto t_day   = day + 1;
+    auto t_month = month;
+    auto t_year  = year;
+    if (t_day > days(year, month)) {
+        t_day = 1; t_month++;
+        if (t_month > 12) {
+            t_month = 1;
+            t_year++;
         }
     }
+    return MyDate(t_year, t_month, t_day);
 }
-void MyDate::yesterday()
+MyDate MyDate::yesterday()
 {
-    day--;
-    if (day<1) 
-    {
-        month--;
-        if(month<1)
-        {
-            year--;
-            month = 12;
+    auto t_day   = day - 1;
+    auto t_month = month;
+    auto t_year  = year;
+    if (day < 1) {
+        t_month--;
+        if (t_month < 1) {
+            t_year--;
+            t_month = 12;
         }
-        day = days();
+        day = days(t_year, t_month);
     }
+    return MyDate(t_year, t_month, t_day);
 }
 
-int MyDate::compare(const MyDate & dst) const
-{
-    if (1000 * year + 100 * month + day > 1000 * dst.year + 100 * dst.month + dst.day) return 1;
-    else if (equals(dst) == 1) return 0;
-    else return -1;
+bool operator<(const MyDate& a, const MyDate& b) {
+    return (1000 * a.year + 100 * a.month + a.day) < (1000 * b.year + 100 * b.month + b.day);
+}
+
+bool operator>(const MyDate& a, const MyDate& b) {
+    return (1000 * a.year + 100 * a.month + a.day) > (1000 * b.year + 100 * b.month + b.day);
+}
+
+bool operator==(const MyDate& a, const MyDate& b) {
+    return (a.year == b.year) && (a.month == b.month) && (a.day == b.day);
+}
+
+bool operator!=(const MyDate& a, const MyDate& b) {
+    return (a.year != b.year) || (a.month != b.month) || (a.day != b.day);
 }
 
 void MyDate::forward(int k)
 {
-    int sum_days = k + day;
     day += k;
-	while(day > days())
-	{
-		day -= days();
+	while (day > days(year, month)) {
+		day -= days(year, month);
     	month++;
-    	if(month > 12)
-		{
+    	if (month > 12) {
 			year++;
 			month = 1;
 		}
@@ -237,16 +243,14 @@ void MyDate::forward(int k)
 }
 void MyDate::rollback(int k)
 {
-    while(k >= day)
-	{
-		k = k - day;
+    while (k >= day) {
+		k -= day;
 		month--;
-		if(month<1)
-		{
+		if (month < 1) {
 			year--;
 			month = 12;
 		}
-		day=days();
+		day = days(year, month);
 	}
 	day -= k;
 }
@@ -257,39 +261,38 @@ void MyDate::rolling(int k)
     else rollback(-k);
 }
 
-void MyDate::rolling_1(int dif) //not recommend
-{
-    int k = dif;
-    if (k<0) while(k!=0) {yesterday(); k++;}
-    else while (k!=0) {tomorrow(); k--;}
-}
+//void MyDate::rolling(int dif) //not recommend
+//{
+//    int k = dif;
+//    if (k < 0) while (k != 0) { yesterday(); k++; }
+//    else while (k != 0) { tomorrow(); k--; }
+//}
 
-int MyDate::get_gap_2(const MyDate& dst) const //not recommend
+int MyDate::gap_2(const MyDate& bgn, const MyDate& dst) //not recommend
 {
-    int gap = 0;
-    MyDate now(year,month,day);
-    MyDate tgt(dst);
-    if (compare(dst) == 1) 
-        while (tgt.equals(now)==0) {
+    int cnt = 0;
+    MyDate now(bgn), tgt(dst);
+    if (now > dst)  
+        while (tgt.equals_to(now)==0) {
             tgt.tomorrow();
-            gap++;
+            cnt++;
         }
     else 
-        while (now.equals(tgt)==0) {
+        while (now.equals_to(tgt)==0) {
             now.tomorrow();
-            gap++;
+            cnt++;
         }
-    return gap;
+    return cnt;
 }
 
-int MyDate::get_gap_1(const MyDate& dst) const 
+int MyDate::gap_1(const MyDate& now, const MyDate& dst) 
 {
-    int cy = year, cm = month, cd = day;
+    int cy = now.year, cm = now.month, cd = now.day;
     int ey = dst.year, em = dst.month, ed = dst.day;
     int sum = 0;
-    if (compare(dst)==1)
+    if (now > dst)
     {
-        swap(cy,ey); swap(cm,em); swap(cd,ed);
+        std::swap(cy,ey); std::swap(cm,em); std::swap(cd,ed);
     }
     if (ey == cy)
     {
@@ -330,23 +333,23 @@ int MyDate::get_gap_1(const MyDate& dst) const
     return sum;
 }
 
-int MyDate::get_gap(const MyDate& date) const
+int MyDate::gap(const MyDate& a, const MyDate& b)
 {
     int sum = 0, sum1 = 0, sum2 = 0;
 
-	for(int i=1; i<month; i++) sum1 += days(year,i);
-	sum1 += day;
-	for(int i=1; i<date.month; i++) sum2 += days(date.year,i);
-	sum2 += date.day;
+	for(int i = 1; i < a.month; i++) sum1 += MyDate::days(a.year,i);
+	sum1 += a.day;
+	for(int i = 1; i < b.month; i++) sum2 += MyDate::days(b.year,i);
+	sum2 += b.day;
     
-    if (year == date.year) sum = abs(sum2-sum1);
+    if (a.year == b.year) sum = abs(sum2-sum1);
     else
 	{
-		int y1 = year, y2 = date.year;
+		int y1 = a.year, y2 = b.year;
 		if (y1 > y2) 
         {
-            swap(y1,y2); 
-            swap(sum1,sum2);
+            std::swap(y1,y2); 
+            std::swap(sum1,sum2);
         }
         sum = sum2 + (365 + is_leap(y1) - sum1);
 
@@ -359,30 +362,32 @@ int MyDate::get_gap(const MyDate& date) const
 	return sum;
 }
 
-int MyDate::get_day() const
+int MyDate::what_day() const
 {
     MyDate date(2020,3,15); //Sunday;
-    int dif = get_gap(date);
+    int dif = gap(*this, date);
     dif %= 7;
     if (dif == 0) return 7;
-    //current date is later than the standard date:
-    else if (compare(date)==1) return dif;
+    else if (date < *this) return dif; // current date is later than the standard
     else return 7-dif;
 }
 
-void MyDate::print_day() const
+std::string MyDate::day_string() const
 {
     static const char* chs_str[7] = {"一","二","三","四","五","六","七"};
     static const char* eng_str[7] = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
+    
+    std::string str;
     if (style == Chinese || style == Normal)
     {
-        cout<<"星期";
-        cout<<chs_str[get_day()-1];
+        str += "星期";
+        str += chs_str[what_day()-1];
     }
     else if(style == English || style == American)
     {
-        cout<<eng_str[get_day()-1];
+        str += eng_str[what_day()-1];
     }
+    return str;
 }
 
 #endif

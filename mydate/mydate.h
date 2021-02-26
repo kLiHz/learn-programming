@@ -4,7 +4,8 @@
 #include <iostream>
 #include <cmath>
 #include <iomanip>
-using namespace std;
+#include <string>
+
 class MyDate 
 {
 public:
@@ -21,32 +22,31 @@ public:
     bool set(int y_, int m_, int d_);
     void set(const MyDate& );
 
-    void tomorrow();
-    void yesterday();
+    MyDate tomorrow();
+    MyDate yesterday();
     void forward(int);
     void rollback(int);
     void rolling(int);
-    void rolling_1(int);
 
-    void print() const;
-    void print_day() const;
-    int  get_day() const;
-    int  days() const;
+    std::string to_string() const;
+    int  what_day() const;
 
-    bool equals(const MyDate& ) const;
-    int  compare(const MyDate& ) const;
+    bool equals_to(const MyDate& ) const;
     bool is_leap() const;
+    friend bool operator <(const MyDate& a, const MyDate& b);
+    friend bool operator >(const MyDate& a, const MyDate& b);
+    friend bool operator==(const MyDate& a, const MyDate& b);
+    friend bool operator!=(const MyDate& a, const MyDate& b);
 
-    int  get_gap(const MyDate& ) const;
-    int  get_gap_1(const MyDate& ) const;
-    int  get_gap_2(const MyDate& ) const;
+    static int   gap(const MyDate& a, const MyDate& b);
+    static int gap_1(const MyDate& a, const MyDate& b);
+    static int gap_2(const MyDate& a, const MyDate& b);
 
 private:
     int  year, month, day;
     static int style;
-    static bool if_print_day;
+    static bool with_what_day;
+    std::string day_string() const;
 };
-int MyDate::style = MyDate::Chinese;
-bool MyDate::if_print_day = false;
 
 #endif

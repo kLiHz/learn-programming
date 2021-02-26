@@ -4,7 +4,7 @@ This is a self-defined class, and it uses an `int` array to store each digits of
 
 It's written in c++ and may enable you to perform high accuracy operation such as calculating the factorial of 20, or the sum of several factorials.
 
-However, it's **not complete** yet: 
+However, it's **not complete** yet.
 
 It only support functions like `add()` and `multiply()` for the time being, and it should be an unsigned integer!
 
@@ -28,8 +28,13 @@ int main()
     return 0;
 }
 ```
+
 output:
-```
+
+```bash
+$ g++ demo.cpp myint.cpp -o demo
+
+$ ./demo
 1! = 1
 2! = 2
 3! = 6
