@@ -1,6 +1,3 @@
-#ifndef _MYDATE_CPP_
-#define _MYDATE_CPP_
-
 #include "mydate.h"
 
 int MyDate::style = MyDate::Chinese;
@@ -261,13 +258,6 @@ void MyDate::rolling(int k)
     else rollback(-k);
 }
 
-//void MyDate::rolling(int dif) //not recommend
-//{
-//    int k = dif;
-//    if (k < 0) while (k != 0) { yesterday(); k++; }
-//    else while (k != 0) { tomorrow(); k--; }
-//}
-
 int MyDate::gap_2(const MyDate& bgn, const MyDate& dst) //not recommend
 {
     int cnt = 0;
@@ -389,5 +379,3 @@ std::string MyDate::day_string() const
     }
     return str;
 }
-
-#endif
