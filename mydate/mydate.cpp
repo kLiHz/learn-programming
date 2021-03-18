@@ -34,13 +34,13 @@ MyDate::MyDate(int y_, int m_, int d_)
 
 int MyDate::days(int y, int m)
 {
-    int days[13] = {0,31,28,31,30,31,30,31,31,30,31,30,31};
-    if (m==2)
+    int days[12] = {31,28,31,30,31,30,31,31,30,31,30,31};
+    if (m == 2)
     {
         if(is_leap(y)) return 29;
         else return 28;
     }
-    else return days[m];
+    else return days[m - 1];
 }
 
 bool MyDate::is_legal(int ty, int tm, int td)
@@ -113,14 +113,12 @@ void MyDate::set(const MyDate& date)
 
 bool MyDate::is_leap() const
 { 
-    if( (year % 4 ==0 && year % 100 != 0) || year % 400 == 0 ) return 1;
-    else return 0;
+    return (year % 4 ==0 && year % 100 != 0) || year % 400 == 0;
 }
 
 int MyDate::is_leap(int year)
 { 
-    if( (year % 4 ==0 && year % 100 != 0) || year % 400 == 0 ) return 1;
-    else return 0;
+    return (year % 4 ==0 && year % 100 != 0) || year % 400 == 0;
 }
 
 std::string MyDate::to_string() const
@@ -229,27 +227,27 @@ bool operator!=(const MyDate& a, const MyDate& b) {
 void MyDate::forward(int k)
 {
     day += k;
-	while (day > days(year, month)) {
-		day -= days(year, month);
-    	month++;
-    	if (month > 12) {
-			year++;
-			month = 1;
-		}
-	}
+    while (day > days(year, month)) {
+        day -= days(year, month);
+        month++;
+        if (month > 12) {
+            year++;
+            month = 1;
+        }
+    }
 }
 void MyDate::rollback(int k)
 {
     while (k >= day) {
-		k -= day;
-		month--;
-		if (month < 1) {
-			year--;
-			month = 12;
-		}
-		day = days(year, month);
-	}
-	day -= k;
+        k -= day;
+        month--;
+        if (month < 1) {
+            year--;
+            month = 12;
+        }
+        day = days(year, month);
+    }
+    day -= k;
 }
 
 void MyDate::rolling(int k)
@@ -264,12 +262,12 @@ int MyDate::gap_2(const MyDate& bgn, const MyDate& dst) //not recommend
     MyDate now(bgn), tgt(dst);
     if (now > dst)  
         while (tgt.equals_to(now)==0) {
-            tgt.tomorrow();
+            tgt = tgt.tomorrow();
             cnt++;
         }
     else 
         while (now.equals_to(tgt)==0) {
-            now.tomorrow();
+            now = now.tomorrow();
             cnt++;
         }
     return cnt;
@@ -327,29 +325,33 @@ int MyDate::gap(const MyDate& a, const MyDate& b)
 {
     int sum = 0, sum1 = 0, sum2 = 0;
 
-	for(int i = 1; i < a.month; i++) sum1 += MyDate::days(a.year,i);
-	sum1 += a.day;
-	for(int i = 1; i < b.month; i++) sum2 += MyDate::days(b.year,i);
-	sum2 += b.day;
+    for (int i = 1; i < a.month; i++) 
+        sum1 += MyDate::days(a.year,i);
+    sum1 += a.day;
+
+    for (int i = 1; i < b.month; i++) 
+        sum2 += MyDate::days(b.year,i);
+    sum2 += b.day;
     
     if (a.year == b.year) sum = abs(sum2-sum1);
     else
-	{
-		int y1 = a.year, y2 = b.year;
-		if (y1 > y2) 
+    {
+        int y1 = a.year, y2 = b.year;
+        if (y1 > y2) 
         {
             std::swap(y1,y2); 
             std::swap(sum1,sum2);
         }
-        sum = sum2 + (365 + is_leap(y1) - sum1);
+        sum += (365 + (is_leap(y1) ? 1 : 0) - sum1);
+        sum += sum2;
 
-		for (int i = y1+1; i<y2; i++)
-		{
-			if (is_leap(i)==1) sum+=366;
-			else sum+=365;
-		}
-	}
-	return sum;
+        for (int i = y1 + 1; i < y2; i++)
+        {
+            if (is_leap(i)) sum += 366;
+            else sum += 365;
+        }
+    }
+    return sum;
 }
 
 int MyDate::what_day() const

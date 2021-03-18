@@ -3,3 +3,9 @@
 *.out
 *.o
 *.exe
+
+build
+bin
+
+[Dd]ebug
+[Rr]elease
