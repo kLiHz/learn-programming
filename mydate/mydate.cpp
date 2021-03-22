@@ -354,30 +354,54 @@ int MyDate::gap(const MyDate& a, const MyDate& b)
     return sum;
 }
 
-int MyDate::what_day() const
+MyDate::Day MyDate::what_day() const
 {
     MyDate date(2020,3,15); //Sunday;
-    int dif = gap(*this, date);
-    dif %= 7;
-    if (dif == 0) return 7;
-    else if (date < *this) return dif; // current date is later than the standard
-    else return 7-dif;
+    auto dif = gap(*this, date) % 7;
+    if (*this < date) dif = (7 - dif) % 7; // current date is earlier than the standard
+    switch (dif)
+    {
+        case 1: return Day::Monday;
+        case 2: return Day::Tuesday;
+        case 3: return Day::Wednesday;
+        case 4: return Day::Thursday;
+        case 5: return Day::Friday;
+        case 6: return Day::Saturday;
+        case 0: default: return Day::Sunday;
+    }
 }
+
+std::map<MyDate::Day, std::string> MyDate::chs_str = {
+    { Day::Monday,      "一" },
+    { Day::Tuesday,     "二" },
+    { Day::Wednesday,   "三" },
+    { Day::Thursday,    "四" },
+    { Day::Friday,      "五" },
+    { Day::Saturday,    "六" },
+    { Day::Sunday,      "七" }
+};
+
+std::map<MyDate::Day, std::string> MyDate::eng_str = {
+    { Day::Monday,      "Monday"     },
+    { Day::Tuesday,     "Tuesday",   },
+    { Day::Wednesday,   "Wednesday"  },
+    { Day::Thursday,    "Thursday"   },
+    { Day::Friday,      "Friday"     },
+    { Day::Saturday,    "Saturday"   },
+    { Day::Sunday,      "Sunday"     }
+};
 
 std::string MyDate::day_string() const
 {
-    static const char* chs_str[7] = {"一","二","三","四","五","六","七"};
-    static const char* eng_str[7] = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
-    
     std::string str;
     if (style == Chinese || style == Normal)
     {
         str += "星期";
-        str += chs_str[what_day()-1];
+        str += chs_str[this->what_day()];
     }
     else if(style == English || style == American)
     {
-        str += eng_str[what_day()-1];
+        str += eng_str[this->what_day()];
     }
     return str;
 }

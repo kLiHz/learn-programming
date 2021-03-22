@@ -5,6 +5,7 @@
 #include <cmath>
 #include <iomanip>
 #include <string>
+#include <map>
 
 class MyDate 
 {
@@ -28,8 +29,12 @@ public:
     void rollback(int);
     void rolling(int);
 
+    enum class Day {
+        Sunday = 0, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday
+    };
+
     std::string to_string() const;
-    int  what_day() const;
+    Day what_day() const;
 
     bool equals_to(const MyDate& ) const;
     bool is_leap() const;
@@ -47,6 +52,8 @@ private:
     static int style;
     static bool with_what_day;
     std::string day_string() const;
+    static std::map<Day, std::string> chs_str;
+    static std::map<Day, std::string> eng_str;
 };
 
 #endif
