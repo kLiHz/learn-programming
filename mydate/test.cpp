@@ -15,25 +15,27 @@ void print_gap(const MyDate& A, const MyDate& B)
 bool set_date(MyDate& d)
 {
     cout << "Previous: " << d.to_string() << endl;
-    cout << "New: \n";
-    int ty, tm, td;
-    cout << "Year:  "; cin >> ty;
-    cout << "Month: "; cin >> tm;
-    cout << "Day:   "; cin >> td;
-    try {
-        d.set(ty,tm,td);
-    }
-    catch(MyDate td)
-    {
-        cout << "Illegal! Date set failed. Did you mean " << td.to_string() << "?" << endl;
-        cout << "Try again!"<<endl;
-        return set_date(d);
-    }
-    catch(...)
-    {
-        cout<<"Unknow error occurred! Date set failed."<<endl;
-        cout<<"Try again!"<<endl;
-        return set_date(d);
+    int ty, tm, td;   
+    bool finish = false;
+    while(!finish) {
+        cout << "New: \n";
+        cout << "Year:  "; cin >> ty;
+        cout << "Month: "; cin >> tm;
+        cout << "Day:   "; cin >> td;
+        try {
+            d.set(ty,tm,td);
+            finish = true;
+        }
+        catch(MyDate td)
+        {
+            cout << "Illegal! Date set failed. Did you mean " << td.to_string() << "?" << endl;
+            cout << "Try again!"<<endl;
+        }
+        catch(...)
+        {
+            cout<<"Unknow error occurred! Date set failed."<<endl;
+            cout<<"Try again!"<<endl;
+        }
     }
     return true;
 }
