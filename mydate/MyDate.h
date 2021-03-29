@@ -48,7 +48,7 @@ public:
     static int gap_2(const MyDate& a, const MyDate& b);
 
 private:
-    int  year, month, day;
+    int year, month, day;
     static int style;
     static bool with_what_day;
     std::string day_string() const;

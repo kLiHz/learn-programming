@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <iomanip>
-#include "mydate.h"
+#include "MyDate.h"
 
 using std::cin;
 using std::cout;
