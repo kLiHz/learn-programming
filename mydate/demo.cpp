@@ -1,6 +1,5 @@
 #include <iostream>
 #include <cmath>
-#include <iomanip>
 #include "MyDate.h"
 
 using std::cin;
@@ -14,11 +13,11 @@ void print_gap(const MyDate& A, const MyDate& B)
 
 bool set_date_from_console_input(MyDate& d)
 {
-    cout << "Previous: " << d.to_string() << endl;
+    cout << "Previous date is : " << d.to_string() << endl;
     int ty, tm, td;   
     bool finish = false;
     while(!finish) {
-        cout << "New: \n";
+        cout << "Enter a new date: \n";
         cout << "Year:  "; cin >> ty;
         cout << "Month: "; cin >> tm;
         cout << "Day:   "; cin >> td;
@@ -26,15 +25,16 @@ bool set_date_from_console_input(MyDate& d)
             d.set(ty,tm,td);
             finish = true;
         }
-        catch(MyDate td)
+        catch (MyDate td)
         {
             cout << "Illegal! Date set failed. Did you mean " << td.to_string() << "?" << endl;
             cout << "Try again!"<<endl;
         }
-        catch(...)
+        catch (...)
         {
-            cout<<"Unknow error occurred! Date set failed."<<endl;
-            cout<<"Try again!"<<endl;
+            cout << "Unknow error occurred! Date set failed." << endl;
+            cout << "Try again!" << endl;
+            return false;
         }
     }
     return true;

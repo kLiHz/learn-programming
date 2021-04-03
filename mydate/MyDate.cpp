@@ -10,28 +10,6 @@ void MyDate::set_format(DayFormat fmt)
     else print_format = fmt;
 }
 
-MyDate::MyDate()
-{
-    year  = 1970;
-    month = 1;
-    day   = 1;
-}
-
-MyDate::MyDate(int y_, int m_, int d_)
-{
-    if (is_legal(y_,m_,d_)) 
-    {
-        year = y_; month = m_; day = d_;
-    }
-    else
-    {
-        std::cout << "class: MyDate: Construction Failure: ";
-        std::cout << "Initialization failed. \n Date is set to ";
-        year = 1970; month = 1; day = 1;
-        std::cout << this->to_string() << ". \n" << std::endl;
-    }
-}
-
 int MyDate::days(int y, int m)
 {
     const static int days[12] = {31,28,31,30,31,30,31,31,30,31,30,31};

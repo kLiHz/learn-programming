@@ -10,8 +10,11 @@
 class MyDate 
 {
 public:
-    MyDate();
-    MyDate(int y_, int m_, int d_);
+    MyDate() : year(1970), month(1), day(1) {}
+
+    MyDate(int y_, int m_, int d_) : MyDate() {
+        if (is_legal(y_,m_,d_)) { year = y_; month = m_; day = d_; }
+    }
 
     enum class Day {
         Sunday = 0, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday
