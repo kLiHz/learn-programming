@@ -357,7 +357,7 @@ std::map<MyDate::Day, std::string> MyDate::chs_str = {
     { Day::Thursday,    "四" },
     { Day::Friday,      "五" },
     { Day::Saturday,    "六" },
-    { Day::Sunday,      "七" }
+    { Day::Sunday,      "日" }
 };
 
 std::map<MyDate::Day, std::string> MyDate::eng_str = {
