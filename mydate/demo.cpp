@@ -12,7 +12,7 @@ void print_gap(const MyDate& A, const MyDate& B)
     cout << A.to_string() + " 和 " + B.to_string() + " 相距 " << MyDate::gap(A, B) << " 天 \n";
 }
 
-bool set_date(MyDate& d)
+bool set_date_from_console_input(MyDate& d)
 {
     cout << "Previous: " << d.to_string() << endl;
     int ty, tm, td;   
@@ -42,10 +42,21 @@ bool set_date(MyDate& d)
 
 int main()
 {
-    MyDate::set_style(MyDate::Normal);
-    MyDate::set_style(MyDate::day_print_on);
-    MyDate a;
-    set_date(a);
-    cout << a.to_string() << endl;
+    MyDate some_day;
+
+    set_date_from_console_input(some_day);
+
+    MyDate::set_format(MyDate::DayFormat::DAY_PRINT_ON);
+
+    MyDate::set_format(MyDate::DayFormat::Normal);
+    cout << "Print the day in Normal  format: " << some_day.to_string() << endl;
+    MyDate::set_format(MyDate::DayFormat::Chinese);
+    cout << "Print the day in Chinese format: " << some_day.to_string() << endl;
+    cout << "Print the day in Chinese format: " << some_day.yesterday().to_string() << endl;
+
+    std::cout << "The day you choose is the " 
+        << MyDate::gap(some_day, MyDate(some_day.get_year(), 1, 1)) + 1 
+        << " day of that year. ";
+
     return 0;
 }

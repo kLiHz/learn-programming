@@ -1,13 +1,13 @@
-#include "mydate.h"
+#include "MyDate.h"
 
-int MyDate::style = MyDate::Chinese;
+MyDate::DayFormat MyDate::print_format = MyDate::DayFormat::Normal;
 bool MyDate::with_what_day = false;
 
-void MyDate::set_style(int t) 
+void MyDate::set_format(DayFormat fmt) 
 {
-    if (t == day_print_on) with_what_day = true;
-    else if (t == day_print_off) with_what_day = false;
-    else style = t;
+    if (fmt == DayFormat::DAY_PRINT_ON) with_what_day = true;
+    else if (fmt == DayFormat::DAY_PRINT_OFF) with_what_day = false;
+    else print_format = fmt;
 }
 
 MyDate::MyDate()
@@ -34,7 +34,7 @@ MyDate::MyDate(int y_, int m_, int d_)
 
 int MyDate::days(int y, int m)
 {
-    int days[12] = {31,28,31,30,31,30,31,31,30,31,30,31};
+    const static int days[12] = {31,28,31,30,31,30,31,31,30,31,30,31};
     if (m == 2)
     {
         if(is_leap(y)) return 29;
@@ -129,25 +129,25 @@ std::string MyDate::to_string() const
     auto year_str  = std::to_string(this->year);
     auto month_str = std::to_string(this->month);
     auto day_str   = std::to_string(this->day);
-    if (style == Chinese) {
+    if (print_format == DayFormat::Chinese) {
         str = year_str + "年" + month_str + "月" + day_str + "日";
         if (with_what_day) { str += "  "; str += this->day_string(); }
     }
-    else if (style == Normal) {
+    else if (print_format == DayFormat::Normal) {
         str = year_str + "/" + month_str + "/" + day_str;
     }
-    else if (style == American) {
+    else if (print_format == DayFormat::American) {
         if (with_what_day) { str += (this->day_string() + ", "); }
         str += (std::string(months_eng[month]) + " " + day_str + ", " + year_str);
     }
-    else if (style == English) {
+    else if (print_format == DayFormat::English) {
         if (with_what_day) { str += (this->day_string() + ", "); }
         str += (day_str + " " + months_eng[month] + ", " + year_str); 
     }
     /*else
     {
         char s[4][4]={"th","st","nd","rd"};
-        if (style == 4) 
+        if (print_format == 4) 
         {
             cout<<months_eng[month]<<" ";
             cout<<day;
@@ -158,7 +158,7 @@ std::string MyDate::to_string() const
             }
             cout<<", "<<year;
         }
-        if (style == 5)
+        if (print_format == 5)
         {
             cout<<day;
             if(day>10&&day<14) cout<<s[0];
@@ -178,7 +178,7 @@ bool MyDate::equals_to(const MyDate& date) const
     return (date.year == year && date.month == month && date.day == day);
 }
 
-MyDate MyDate::tomorrow()
+MyDate MyDate::tomorrow() const
 {
     auto t_day   = day + 1;
     auto t_month = month;
@@ -192,18 +192,19 @@ MyDate MyDate::tomorrow()
     }
     return MyDate(t_year, t_month, t_day);
 }
-MyDate MyDate::yesterday()
+
+MyDate MyDate::yesterday() const
 {
     auto t_day   = day - 1;
     auto t_month = month;
     auto t_year  = year;
-    if (day < 1) {
+    if (t_day < 1) {
         t_month--;
         if (t_month < 1) {
             t_year--;
             t_month = 12;
         }
-        day = days(t_year, t_month);
+        t_day = days(t_year, t_month);
     }
     return MyDate(t_year, t_month, t_day);
 }
@@ -394,12 +395,12 @@ std::map<MyDate::Day, std::string> MyDate::eng_str = {
 std::string MyDate::day_string() const
 {
     std::string str;
-    if (style == Chinese || style == Normal)
+    if (print_format == DayFormat::Chinese || print_format == DayFormat::Normal)
     {
         str += "星期";
         str += chs_str[this->what_day()];
     }
-    else if(style == English || style == American)
+    else if(print_format == DayFormat::English || print_format == DayFormat::American)
     {
         str += eng_str[this->what_day()];
     }
