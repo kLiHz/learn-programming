@@ -234,7 +234,7 @@ auto main( int argc, char* argv[] ) -> int {
         cout << "A program that helps you to proc your source cpp file" << endl;
         exit( EXIT_SUCCESS );
     }
-    if ( !vm.count( "infile" ) ) {
+    if ( !vm.count( "srcfile" ) ) {
         cerr << "Need infile" << endl;
         exit( EXIT_FAILURE );
     }
