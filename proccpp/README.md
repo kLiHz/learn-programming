@@ -11,17 +11,21 @@ This might be useful when you want to share your code with your friend(s), but n
 
 `decomment.cpp` can be used to remove all the comments, while `proccpp.cpp` will remove all the comments **as well as** all function definitions.
 
-**What's new:** Now "remove definitions" and other task options are **almost** optional for `proccpp` (which means it's not yet made optional through command line parameters), check it out at `procpp_class.cpp`.
+**What's new:** Now "remove definitions" and other task options are optional for `pcpp` through command line parameters, check it out at `pcpp.cpp`.
+
+**Dependencies**: boost libraries.
 
 ## Usage
 
-Use command line to process your file. Assuming that the bin file is named as `proccpp`:
+Use command line to process your file. Assuming that the bin file is named as `pcpp`, then:
 
 ```bash
-./proccpp test.cpp test_1.cpp
+./pcpp -i test.cpp -o test_1.cpp --rmcom
 ```
 
-Then the program receives the file named `test.cpp` and would save the processed file to `test_1.cpp`.
+Then the program receives the file named `test.cpp` and will save the processed file to `test_1.cpp`. 
+
+`--rmcom` means to remove comments from the source file, while you can also add `--rmdef` to remove definitions.
 
 
 
