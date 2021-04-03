@@ -8,21 +8,21 @@ using namespace std;
 class ProcCPP {
     ifstream inFile;
     ofstream outFile;
-    // const char* srcName;
-    // const char* dstName;
-    void process();
 
-   public:
-    ProcCPP()  = default;
-    ~ProcCPP() = default;
-    auto proc( const string& srcName, const string& dstName ) -> bool;
-};
-
-void ProcCPP::process() {
     bool rm_definition = true;
     bool rm_comment    = true;
     bool rm_in_bracket = false;  // false
 
+    void process();
+
+   public:
+    ProcCPP() = default;
+    ProcCPP( bool is_rm_def, bool is_rm_com ) : rm_definition(is_rm_def), rm_comment(is_rm_com) {}
+    ~ProcCPP() = default;
+    auto operator()( const string& srcName, const string& dstName ) -> bool;
+};
+
+void ProcCPP::process() {
     char ch             = 0;
     bool str_mode       = false;
     bool char_mode      = false;
@@ -170,7 +170,8 @@ void ProcCPP::process() {
         }
     }
 }
-auto ProcCPP::proc( const string& srcName, const string& dstName ) -> bool {
+
+auto ProcCPP::operator()( const string& srcName, const string& dstName ) -> bool {
     inFile.open( srcName, ios::in );
     if ( !inFile.is_open() ) {
         cout << "Failed to open file '" << srcName << "'." << endl;
@@ -189,9 +190,12 @@ auto ProcCPP::proc( const string& srcName, const string& dstName ) -> bool {
     outFile.close();
     return true;
 }
+
 auto main( int argc, char* argv[] ) -> int {
     string                                      srcFilename;
     string                                      outFilename;
+    bool                                        rm_def = false;
+    bool                                        rm_com = false;
     boost::program_options::options_description desc( "options" );
     desc.add_options()( 
         "help,h", "Display help information" )(
@@ -200,12 +204,15 @@ auto main( int argc, char* argv[] ) -> int {
         boost::program_options::value<string>( &srcFilename )
             ->default_value( "in.cpp" )
             ->value_name( "SRCFILE" ),
-        "specify input file" )(
+        "Specify input file" )(
         "outfile,o",
         boost::program_options::value<string>( &outFilename )
             ->default_value( "out.cpp" )
             ->value_name( "OUTFILE" ),
-        "specify output file" );
+        "Specify output file" )(
+        "rmdef", "Remove Function Definition")(
+        "rmcom", "Remove comments"
+        );
     boost::program_options::positional_options_description pd;
     pd.add( "srcfile", 0 );
     pd.add( "outfile", 1 );
@@ -224,26 +231,28 @@ auto main( int argc, char* argv[] ) -> int {
     }
     boost::program_options::notify( vm );
     if ( vm.count( "help" ) ) {
-        cout << "Usage: " << argv[ 0 ] << " [-h] [[-i] SRCFILE] [[-o] OUTFILE]"
+        cout << "Usage: " << argv[ 0 ] << " [-h] [[-i] SRCFILE] [[-o] OUTFILE] [--rmdef] [--rmcom]"
              << endl;
         cerr << desc;
         exit( EXIT_SUCCESS );
     }
     if ( vm.count( "version" ) ) {
         cout << "proccpp 1.0\n";
-        cout << "A program that helps you to proc your source cpp file" << endl;
+        cout << "A program that helps you to proc your cpp source file." << endl;
         exit( EXIT_SUCCESS );
     }
     if ( !vm.count( "srcfile" ) ) {
-        cerr << "Need infile" << endl;
+        cerr << "No infile was given." << endl;
         exit( EXIT_FAILURE );
     }
     if ( !vm.count( "outfile" ) ) {
-        cerr << "Need outfile" << endl;
+        cerr << "No outfile was given." << endl;
         exit( EXIT_FAILURE );
     }
-    auto* instance = new ProcCPP();
-    instance->proc( srcFilename, outFilename );
-    delete instance;
+    if ( vm.count( "rmdef" )) { rm_def = true; }
+    if ( vm.count( "rmcom" )) { rm_com = true; }
+    
+    ProcCPP pcpp(rm_def, rm_com);
+    pcpp( srcFilename, outFilename );
     return 0;
 }
