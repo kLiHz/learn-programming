@@ -60,7 +60,7 @@ public:
 private:
     int year, month, day;
     static DayFormat print_format;
-    static bool with_what_day;
+    static bool print_day_of_the_week;
     std::string day_string() const;
     static std::map<Day, std::string> chs_str;
     static std::map<Day, std::string> eng_str;

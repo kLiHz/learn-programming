@@ -29,3 +29,10 @@ catch (MyDate advice)
 ```
 
 Well, maybe I should throw something else like the data which is illegal? I have no idea...
+
+## References
+
+[One Digit Day of Week Abbreviations - EventGuide](https://eventguide.com/topics/one_digit_day_abbreviations.html)
+
+[Abbreviations of Time - Writing Guide ✍️ - A Research Guide for Students](https://www.aresearchguide.com/monthdayabb.html)
+
