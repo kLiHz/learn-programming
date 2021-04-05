@@ -1,12 +1,12 @@
 #include "MyDate.h"
 
 MyDate::DayFormat MyDate::print_format = MyDate::DayFormat::Normal;
-bool MyDate::with_what_day = false;
+bool MyDate::print_day_of_the_week = false;
 
 void MyDate::set_format(DayFormat fmt) 
 {
-    if (fmt == DayFormat::DAY_PRINT_ON) with_what_day = true;
-    else if (fmt == DayFormat::DAY_PRINT_OFF) with_what_day = false;
+    if (fmt == DayFormat::DAY_PRINT_ON) print_day_of_the_week = true;
+    else if (fmt == DayFormat::DAY_PRINT_OFF) print_day_of_the_week = false;
     else print_format = fmt;
 }
 
@@ -109,17 +109,17 @@ std::string MyDate::to_string() const
     auto day_str   = std::to_string(this->day);
     if (print_format == DayFormat::Chinese) {
         str = year_str + "年" + month_str + "月" + day_str + "日";
-        if (with_what_day) { str += "  "; str += this->day_string(); }
+        if (print_day_of_the_week) { str += "  "; str += this->day_string(); }
     }
     else if (print_format == DayFormat::Normal) {
         str = year_str + "/" + month_str + "/" + day_str;
     }
     else if (print_format == DayFormat::American) {
-        if (with_what_day) { str += (this->day_string() + ", "); }
+        if (print_day_of_the_week) { str += (this->day_string() + ", "); }
         str += (std::string(months_eng[month]) + " " + day_str + ", " + year_str);
     }
     else if (print_format == DayFormat::English) {
-        if (with_what_day) { str += (this->day_string() + ", "); }
+        if (print_day_of_the_week) { str += (this->day_string() + ", "); }
         str += (day_str + " " + months_eng[month] + ", " + year_str); 
     }
     /*else
