@@ -4,8 +4,9 @@
 *.o
 *.exe
 
-build
-bin
+build/
+bin/
 
 [Dd]ebug
 [Rr]elease
+
