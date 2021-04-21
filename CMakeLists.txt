@@ -8,3 +8,5 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_subdirectory(mydate)
 
 add_subdirectory(proccpp)
+
+add_subdirectory(connect4)
