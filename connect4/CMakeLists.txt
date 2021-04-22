@@ -1,8 +1,8 @@
-project(Connect-4)
+project(Connect4)
 
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED on)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_executable(c4 ChessGame.cpp Connect4.cpp main.cpp)
+add_executable(c4_TextUI ChessGame.cpp Connect4.cpp C4_Text_Interface.cpp main_TextUI.cpp)
 
-install(TARGETS c4 DESTINATION ${PROJECT_SOURCE_DIR}/bin)
+install(TARGETS c4_TextUI DESTINATION ${PROJECT_SOURCE_DIR}/bin)
