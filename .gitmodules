@@ -1,0 +1,3 @@
+[submodule "MyInt"]
+	path = MyInt
+	url = https://github.com/tsagaanbar/big-decimal-int
