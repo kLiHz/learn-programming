@@ -1,3 +1,6 @@
 [submodule "MyInt"]
 	path = MyInt
 	url = https://github.com/tsagaanbar/big-decimal-int
+[submodule "connect4"]
+	path = connect4
+	url = https://github.com/tsagaanbar/connect-4
