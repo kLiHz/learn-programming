@@ -1,6 +1,6 @@
 project(MyDate-Class)
 
-add_library(mydate STATIC MyDate.cpp)
+add_library(mydate STATIC MyDate.h MyDate.cpp)
 
 add_executable(mydate_demo demo.cpp)
 target_link_libraries(mydate_demo mydate)

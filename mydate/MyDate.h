@@ -43,9 +43,9 @@ public:
 
     MyDate tomorrow()   const;
     MyDate yesterday()  const;
-    void forward(int);
-    void rollback(int);
-    void rolling(int);
+    MyDate& forward(int);
+    MyDate& rollback(int);
+    MyDate& rolling(int);
 
     std::string to_string() const;
     Day what_day() const;
@@ -56,6 +56,10 @@ public:
     friend bool operator >(const MyDate& a, const MyDate& b);
     friend bool operator==(const MyDate& a, const MyDate& b);
     friend bool operator!=(const MyDate& a, const MyDate& b);
+
+    friend int operator-(MyDate const & a, MyDate const & b);
+    friend MyDate operator+(MyDate const & a, int);
+    friend MyDate operator-(MyDate const & a, int);
 
 private:
     int year, month, day;

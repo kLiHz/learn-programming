@@ -151,9 +151,9 @@ std::string MyDate::to_string() const
     return str;
 }
 
-bool MyDate::equals_to(const MyDate& date) const
+bool MyDate::equals_to(const MyDate& other) const
 {
-    return (date.year == year && date.month == month && date.day == day);
+    return (*this == other);
 }
 
 MyDate MyDate::tomorrow() const
@@ -203,7 +203,17 @@ bool operator!=(const MyDate& a, const MyDate& b) {
     return (a.year != b.year) || (a.month != b.month) || (a.day != b.day);
 }
 
-void MyDate::forward(int k)
+int operator-(MyDate const & a, MyDate const & b) {
+    return ((a > b) ? 1 : -1) * MyDate::gap(a, b);
+}
+MyDate operator+(MyDate const & a, int diff) {
+    return MyDate(a).rolling( diff);
+}
+MyDate operator-(MyDate const & a, int diff) {
+    return MyDate(a).rolling(-diff);
+}
+
+MyDate & MyDate::forward(int k)
 {
     day += k;
     while (day > days(year, month)) {
@@ -214,8 +224,9 @@ void MyDate::forward(int k)
             month = 1;
         }
     }
+    return *this;
 }
-void MyDate::rollback(int k)
+MyDate & MyDate::rollback(int k)
 {
     while (k >= day) {
         k -= day;
@@ -227,12 +238,14 @@ void MyDate::rollback(int k)
         day = days(year, month);
     }
     day -= k;
+    return *this;
 }
 
-void MyDate::rolling(int k)
+MyDate & MyDate::rolling(int k)
 {
     if (k>0) forward(k); 
     else rollback(-k);
+    return *this;
 }
 
 int MyDate::gap_2(const MyDate& bgn, const MyDate& dst) //not recommend
