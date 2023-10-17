@@ -187,12 +187,16 @@ MyDate MyDate::yesterday() const
     return MyDate(t_year, t_month, t_day);
 }
 
+int MyDate::to_binary() const {
+    return (this->day) | (this->month << 5) | (this->year << 9);
+}
+
 bool operator<(const MyDate& a, const MyDate& b) {
-    return (1000 * a.year + 100 * a.month + a.day) < (1000 * b.year + 100 * b.month + b.day);
+    return a.to_binary() < b.to_binary();
 }
 
 bool operator>(const MyDate& a, const MyDate& b) {
-    return (1000 * a.year + 100 * a.month + a.day) > (1000 * b.year + 100 * b.month + b.day);
+    return a.to_binary() > b.to_binary();
 }
 
 bool operator==(const MyDate& a, const MyDate& b) {
@@ -200,7 +204,7 @@ bool operator==(const MyDate& a, const MyDate& b) {
 }
 
 bool operator!=(const MyDate& a, const MyDate& b) {
-    return (a.year != b.year) || (a.month != b.month) || (a.day != b.day);
+    return a.to_binary() != b.to_binary();
 }
 
 int operator-(MyDate const & a, MyDate const & b) {

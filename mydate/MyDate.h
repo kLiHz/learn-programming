@@ -68,6 +68,7 @@ private:
     std::string day_string() const;
     static std::map<Day, std::string> chs_str;
     static std::map<Day, std::string> eng_str;
+    int to_binary() const;
 };
 
 #endif
